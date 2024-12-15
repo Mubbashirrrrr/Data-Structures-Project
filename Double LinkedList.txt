@@ -1,0 +1,344 @@
+							
+									DNode.h
+#pragma once
+#include<iostream>
+using namespace std;
+
+class DNode
+{
+private:
+    int data;
+    DNode* next;
+    DNode* prev;
+
+public:
+    DNode();
+    DNode(int);
+    void setData(int);
+    void setNext(DNode*);
+    void setPrev(DNode*);
+    int getData();
+    DNode* getNext();
+    DNode* getPrev();
+};
+
+									DLinkedlist
+
+
+
+#pragma once
+
+#include"DNode.h"
+
+class DLinkedlist
+{
+private:
+    DNode* head;
+    DNode* tail;
+
+public:
+    DLinkedlist();
+    bool isEmpty();
+    void insertAtHead(int);
+    void insertAtTail(int);
+    void display();
+    
+    void Search(int);
+    void insertAtTarget(int, int);
+    void remove(int);
+};
+								
+								Implementation
+
+
+#include "DNode.h"
+#include "DLinkedlist.h"
+#include<iostream>
+using namespace std;
+
+
+
+DNode::DNode()
+{
+    this->data = 0;
+    next = NULL;
+    prev = NULL;
+}
+
+
+DNode::DNode(int data)
+{
+    this->data = data;
+    next = NULL;
+    prev = NULL;
+}
+
+
+void DNode::setData(int data)
+{
+    this->data = data;
+}
+
+
+void DNode::setNext(DNode* next)
+{
+    this->next = next;
+}
+
+
+void DNode::setPrev(DNode* prev)
+{
+    this->prev = prev;
+}
+
+
+int DNode::getData()
+{
+    return this->data;
+}
+
+
+DNode* DNode::getNext()
+{
+    return this->next;
+}
+
+
+DNode* DNode::getPrev()
+{
+    return this->prev;
+}
+
+
+DLinkedlist::DLinkedlist()
+{
+    head = NULL;
+    tail = NULL;
+}
+
+
+bool DLinkedlist::isEmpty()
+{
+    if (head == NULL)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+
+void DLinkedlist::insertAtHead(int data)
+{
+    DNode* newNode = new DNode(data);
+    if (isEmpty())
+    {
+        head = newNode;
+        tail = newNode;
+    }
+    else
+    {
+        newNode->setNext(head);
+        head->setPrev(newNode);
+        head = newNode;
+    }
+}
+
+
+void DLinkedlist::insertAtTail(int data)
+{
+    DNode* newNode = new DNode(data);
+    if (isEmpty())
+    {
+        head = newNode;
+        tail = newNode;
+    }
+    else
+    {
+        newNode->setPrev(tail);
+        tail->setNext(newNode);
+        tail = newNode;
+    }
+}
+
+
+void DLinkedlist::display()
+{
+    DNode* temp = head;
+    while (temp != NULL)
+    {
+        cout << temp->getData() << " , ";
+        temp = temp->getNext();
+    }
+    cout << "NULL" << endl;
+}
+
+
+
+
+void DLinkedlist::Search(int num)
+{
+    DNode* ptr = head;
+    while (ptr != NULL)
+    {
+        if (ptr->getData() == num)
+        {
+            cout << "Data found successfully: " << num << endl;
+            return;
+        }
+        ptr = ptr->getNext();
+    }
+    cout << "Data not found in the Linkedlist." << endl;
+}
+
+
+void DLinkedlist::insertAtTarget(int value, int target)
+{
+    if (isEmpty())
+    {
+        cout << "List is empty!" << endl;
+        return;
+    }
+
+    DNode* temp = head;
+
+    while (temp != NULL)
+    {
+        if (temp->getData() == target)
+        {
+            break;
+        }
+        temp = temp->getNext();
+    }
+
+    if (temp == NULL)
+    {
+        cout << "Target value not found in the list!" << endl;
+        return;
+    }
+
+    DNode* newNode = new DNode(value);
+
+    if (temp == head) 
+    {
+        insertAtHead(value);
+    }
+    else if (temp == tail)
+    {
+        insertAtTail(value);
+    }
+    else
+    {
+        DNode* previous = temp->getPrev();
+        previous->setNext(newNode);
+        newNode->setPrev(previous);
+        newNode->setNext(temp);
+        temp->setPrev(newNode);
+    }
+}
+
+
+void DLinkedlist::remove(int target)
+{
+    if (isEmpty())
+    {
+        cout << "List is empty!" << endl;
+        return;
+    }
+
+    DNode* temp = head;
+
+    while (temp != NULL)
+    {
+        if (temp->getData() == target)
+        {
+            break;
+        }
+        temp = temp->getNext();
+    }
+
+    if (temp == NULL)
+    {
+        cout << "Target value not found!" << endl;
+        return;
+    }
+
+    if (temp == head)
+    {
+        head = temp->getNext();
+        if (head != NULL)
+        {
+            head->setPrev(NULL);
+        }
+        else
+        {
+            tail = NULL;
+        }
+        delete temp;
+    }
+    else if (temp == tail) 
+    {
+        tail = temp->getPrev();
+        if (tail != NULL)
+        {
+            tail->setNext(NULL);
+        }
+        else
+        {
+            head = NULL;
+        }
+        delete temp;
+    }
+    else 
+    {
+        DNode* previous = temp->getPrev();
+        DNode* next = temp->getNext();
+
+        previous->setNext(next);
+        next->setPrev(previous);
+        delete temp;
+    }
+}
+
+										Main'
+
+
+#include "DLinkedlist.h"
+#include <iostream>
+using namespace std;
+
+int main()
+{
+    DLinkedlist l;
+
+   
+    l.insertAtHead(10);
+    l.insertAtTail(20);
+    l.insertAtTail(30);
+    l.insertAtHead(5);
+
+    
+    cout << "Linked List:" << endl;
+    l.display();
+
+   
+   
+
+    
+    cout << "Searching for 20 in the Linked List:" << endl;
+    l.Search(20);
+
+    
+    cout << "Inserting 8 before 5:" << endl;
+    l.insertAtTarget(8, 5);
+    l.display();
+
+    
+    cout << "Removing 20 from the Linked List:" << endl;
+    l.remove(20);
+    l.display();
+
+    return 0;
+}
