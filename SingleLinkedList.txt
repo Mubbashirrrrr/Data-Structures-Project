@@ -1,0 +1,280 @@
+							Node.h
+
+
+#pragma once
+
+class Node
+{
+private:
+    int data;
+    Node* next;
+
+public:
+    Node();
+    Node(int);
+    void setData(int);
+    void setNext(Node*);
+    int getData();
+    Node* getNext();
+};
+
+						Linkedlist.h
+
+#pragma once
+#include "Node.h"
+
+class Linkedlist
+{
+private:
+    Node* head;
+    Node* tail;
+
+public:
+    Linkedlist();
+    bool isEmpty();
+    void insertAtHead(int);
+    void insertAtTail(int);
+    void display();
+    void Search(int);
+    void insertAtTarget(int, int);
+    void remove(int);
+};
+
+					 Implementation
+
+#include "Linkedlist.h"
+#include "Node.h"
+#include <iostream>
+using namespace std;
+
+
+Node::Node()
+{
+    this->data = 0;
+    next = NULL;
+}
+
+
+Node::Node(int data)
+{
+    this->data = data;
+    next = NULL;
+}
+
+
+void Node::setData(int data)
+{
+    this->data = data;
+}
+
+
+void Node::setNext(Node* next)
+{
+    this->next = next;
+}
+
+int Node::getData()
+{
+    return this->data;
+}
+
+Node* Node::getNext()
+{
+    return this->next;
+}
+
+Linkedlist::Linkedlist()
+{
+    head = NULL;
+    tail = NULL;
+}
+
+
+bool Linkedlist::isEmpty()
+{
+    if (head == NULL)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+
+void Linkedlist::insertAtHead(int data)
+{
+    Node* newNode = new Node(data);
+    if (isEmpty())
+    {
+        head = newNode;
+        tail = newNode;
+    }
+    else
+    {
+        newNode->setNext(head);
+        head = newNode;
+    }
+}
+
+
+void Linkedlist::insertAtTail(int data)
+{
+    Node* newNode = new Node(data);
+    if (isEmpty())
+    {
+        head = newNode;
+        tail = newNode;
+    }
+    else
+    {
+        tail->setNext(newNode);
+        tail = newNode;
+    }
+}
+
+void Linkedlist::display()
+{
+    Node* temp = head;
+    while (temp != NULL)
+    {
+        cout << temp->getData() <<",";
+        temp = temp->getNext();
+    }
+    cout << "NULL" << endl;
+}
+
+
+void Linkedlist::Search(int num)
+{
+    Node* ptr = head;
+    while (ptr != NULL)
+    {
+        if (ptr->getData() == num)
+        {
+            cout << "Data found successfully: " << num << endl;
+            return;
+        }
+        ptr = ptr->getNext();
+    }
+    cout << "Data not found in the Linkedlist." << endl;
+}
+
+void Linkedlist::insertAtTarget(int value, int target)
+{
+    if (isEmpty())
+    {
+        cout << "List is empty!" << endl;
+        return;
+    }
+
+    Node* temp = head;
+    Node* previous = NULL;
+
+    while (temp != NULL)
+    {
+        if (temp->getData() == target)
+        {
+            break;
+        }
+        previous = temp;
+        temp = temp->getNext();
+    }
+
+    if (temp == NULL)
+    {
+        cout << "Target value not found in the list!" << endl;
+        return;
+    }
+
+    Node* newNode = new Node(value);
+
+    if (temp == head) 
+    {
+        insertAtHead(value);
+    }
+    else
+    {
+        previous->setNext(newNode);
+        newNode->setNext(temp);
+    }
+}
+
+
+void Linkedlist::remove(int target)
+{
+    if (isEmpty())
+    {
+        cout << "List is empty!" << endl;
+        return;
+    }
+
+    Node* temp = head;
+    Node* previous = NULL;
+
+    while (temp != NULL)
+    {
+        if (temp->getData() == target)
+        {
+            break;
+        }
+        previous = temp;
+        temp = temp->getNext();
+    }
+
+    if (temp == NULL)
+    {
+        cout << "Target value not found!" << endl;
+        return;
+    }
+
+    if (temp == head) 
+    {
+        head = temp->getNext();
+        delete temp;
+    }
+    else if (temp == tail) 
+    {
+        previous->setNext(NULL);
+        tail = previous;
+        delete temp;
+    }
+    else 
+    {
+        previous->setNext(temp->getNext());
+        delete temp;
+    }
+}
+
+							Main
+
+
+
+#include"Linkedlist.h"
+#include<iostream>
+using namespace std;
+int main()
+{
+    Linkedlist l;
+    l.insertAtHead(10);
+    l.insertAtTail(20);
+    l.insertAtTail(30);
+    l.insertAtHead(5);
+
+    cout << "Initial Linked List:" << endl;
+    l.display();
+
+    cout << "Searching for 20 in the Linked List:" << endl;
+    l.Search(20);
+
+    cout << "Inserting 8 after 5:" << endl;
+    l.insertAtTarget(8, 5);
+    l.display();
+
+    cout << "Removing 20 from the Linked List:" << endl;
+    l.remove(20);
+    l.display();
+
+    return 0;
+}
