@@ -1,0 +1,296 @@
+				
+
+
+										Node.h
+
+
+
+#pragma once
+#include<iostream>
+using namespace std;
+
+class Node
+{
+private:
+    int data;
+    Node* next;
+
+public:
+    Node();
+    Node(int);
+    void setData(int);
+    void setNext(Node*);
+    int getData();
+    Node* getNext();
+};
+
+
+
+									LinkedList.h
+
+
+#pragma once
+#include "Node.h"
+
+class Linkedlist
+{
+private:
+    Node* head;
+    Node* tail;
+
+public:
+    Linkedlist();
+    bool isEmpty();
+    void insertAtHead(int);
+    void insertAtTail(int);
+    void display();
+    void Search(int);
+    void insertAtTarget(int, int);
+    void remove(int);
+};
+
+
+								Implementation
+
+
+#include "Linkedlist.h"
+#include "Node.h"
+#include <iostream>
+using namespace std;
+
+
+Node::Node()
+{
+    this->data = 0;
+    next = NULL;
+}
+
+
+Node::Node(int data)
+{
+    this->data = data;
+    next = NULL;
+}
+
+
+void Node::setData(int data)
+{
+    this->data = data;
+}
+
+
+void Node::setNext(Node* next)
+{
+    this->next = next;
+}
+
+int Node::getData()
+{
+    return this->data;
+}
+
+Node* Node::getNext()
+{
+    return this->next;
+}
+
+
+Linkedlist::Linkedlist()
+{
+    head = NULL;
+    tail = NULL;
+}
+
+bool Linkedlist::isEmpty()
+{
+    return head == NULL;
+}
+
+void Linkedlist::insertAtHead(int data)
+{
+    Node* newNode = new Node(data);
+    if (isEmpty())
+    {
+        head = newNode;
+        tail = newNode;
+        tail->setNext(head);
+    }
+    else
+    {
+        newNode->setNext(head);
+        head = newNode;
+        tail->setNext(head);
+    }
+}
+
+void Linkedlist::insertAtTail(int data)
+{
+    Node* newNode = new Node(data);
+    if (isEmpty())
+    {
+        head = newNode;
+        tail = newNode;
+        tail->setNext(head);
+    }
+    else
+    {
+        tail->setNext(newNode);
+        tail = newNode;
+        tail->setNext(head); 
+    }
+}
+
+void Linkedlist::display()
+{
+    if (isEmpty())
+    {
+        cout << "List is empty!" << endl;
+        return;
+    }
+
+    Node* temp = head;
+    while (temp != head)
+    {
+        cout << temp->getData() << " ";
+        temp = temp->getNext();
+        
+    } 
+    cout << "-> HEAD(" << head->getData() << ")" << endl;
+}
+
+void Linkedlist::Search(int num)
+{
+    if (isEmpty())
+    {
+        cout << "List is empty!" << endl;
+        return;
+    }
+
+    Node* temp = head;
+    do
+    {
+        if (temp->getData() == num)
+        {
+            cout << "Data found successfully: " << num << endl;
+            return;
+        }
+        temp = temp->getNext();
+    } while (temp != head);
+
+    cout << "Data not found in the Linked List." << endl;
+}
+
+void Linkedlist::insertAtTarget(int value, int target)
+{
+    if (isEmpty())
+    {
+        cout << "List is empty!" << endl;
+        return;
+    }
+
+    Node* temp = head;
+    do
+    {
+        if (temp->getData() == target)
+        {
+            Node* newNode = new Node(value);
+            newNode->setNext(temp->getNext());
+            temp->setNext(newNode);
+
+            if (temp == tail) 
+            {
+                tail = newNode;
+            }
+            return;
+        }
+        temp = temp->getNext();
+    } while (temp != head);
+
+    cout << "Target value not found in the list!" << endl;
+}
+
+void Linkedlist::remove(int target)
+{
+    if (isEmpty())
+    {
+        cout << "List is empty!" << endl;
+        return;
+    }
+
+    Node* temp = head;
+    Node* previous = tail; 
+
+    do
+    {
+        if (temp->getData() == target)
+        {
+            if (temp == head) 
+            {
+                if (head == tail) 
+                {
+                    delete head;
+                    head = NULL;
+                    tail = NULL;
+                }
+                else
+                {
+                    head = head->getNext();
+                    tail->setNext(head); 
+                    delete temp;
+                }
+            }
+            else if (temp == tail)
+            {
+                previous->setNext(head);
+                tail = previous;
+                delete temp;
+            }
+            else 
+            {
+                previous->setNext(temp->getNext());
+                delete temp;
+            }
+            return;
+        }
+
+        previous = temp;
+        temp = temp->getNext();
+    } while (temp != head);
+
+    cout << "Target value not found!" << endl;
+}
+
+
+
+
+									Main
+
+
+#include "Linkedlist.h"
+#include <iostream>
+using namespace std;
+
+int main()
+{
+    Linkedlist l;
+    l.insertAtHead(10);
+    l.insertAtTail(20);
+    l.insertAtTail(30);
+    l.insertAtHead(5);
+
+    cout << "Initial Circular Linked List:" << endl;
+    l.display();
+
+    cout << "Searching for 20 in the Circular Linked List:" << endl;
+    l.Search(20);
+
+    cout << "Inserting 8 after 5:" << endl;
+    l.insertAtTarget(8, 5);
+    l.display();
+
+    cout << "Removing 20 from the Circular Linked List:" << endl;
+    l.remove(20);
+    l.display();
+
+    return 0;
+}
