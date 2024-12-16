@@ -1,0 +1,157 @@
+
+
+										Node.h
+#pragma once
+#include<iostream>
+using namespace std;
+class Node
+{
+private:
+	int data;
+	Node* next;
+
+public:
+	Node();
+	
+		
+	
+	Node(int);
+	void setData(int);
+    void setNext(Node*);
+    int getData();
+	Node* getNext();
+	
+};
+
+			
+										Stack.h		
+
+#pragma once
+#include"Node.h"
+class Stack
+{
+private:
+	Node* top;
+public:
+	Stack();
+	void push(int);
+	int pop();
+	bool isEmpty();
+	Node* getTop();
+	void print();
+
+};
+
+										
+									Implementation
+
+#include"Stack.h"
+#include"Node.h"
+#include<iostream>
+using namespace std;
+
+
+
+
+Node::Node()
+	{
+		this->data = 0;
+		next = NULL;
+	}
+Node::Node(int data)
+	{
+		this->data = data;
+		next = NULL;
+	}
+	void Node::setData(int data)
+	{
+		this->data = data;
+	}
+	void Node::setNext(Node* next)
+	{
+		this->next = next;
+	}
+	int Node::getData()
+	{
+		return this->data;
+	}
+	Node* Node::getNext()
+	{
+		return this->next;
+	}
+
+
+Stack::Stack()
+{
+	top = NULL;
+}
+void Stack::push(int value)
+{
+	if (isEmpty())
+	{
+		Node* temp = new Node(value);
+		top = temp;
+	}
+	else
+	{
+		Node* temp = new Node(value);
+		temp->setNext(top);
+		top = temp;
+	}
+}
+int Stack::pop()
+{
+	Node* temp = top;
+	top = top->getNext();
+	int value = temp->getData();
+	delete temp;
+	return value;
+}
+bool Stack::isEmpty()
+{
+	if (top == NULL)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+Node* Stack::getTop()
+{
+	return this->top;
+}
+void Stack::print()
+{
+	Node* temp = top;
+	while (temp != NULL)
+	{
+		cout << temp->getData() << endl;
+		temp = temp->getNext();
+	}
+}
+
+									Main
+
+#include"Stack.h"
+#include<iostream>
+#include<conio.h>
+using namespace std;
+int main()
+{
+	Stack stack;
+	stack.push(3);
+	stack.push(7);
+	stack.push(9);
+	cout << "Stack after Pushing values in it :" << endl;
+	stack.print();
+
+	stack.pop();
+	stack.pop();
+	cout << "Stack after Poping values from it :" << endl;
+	stack.print();
+	return 0;
+}
+
+		
