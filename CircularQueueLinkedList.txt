@@ -1,0 +1,197 @@
+
+
+									CircularNode.h
+
+#pragma once
+#include<iostream>
+using namespace std;
+
+class CircularNode
+{
+private:
+    int data;
+    CircularNode* next;
+
+public:
+    CircularNode();
+    CircularNode(int);
+    void setData(int);
+    void setNext(CircularNode*);
+    int getData();
+    CircularNode* getNext();
+};
+
+
+									
+								   CircularQueue.h
+
+
+#include"CircularNode.h"
+#include<iostream>
+using namespace std;
+
+#pragma once
+
+class CircularQueue
+{
+private:
+    CircularNode* front;
+    CircularNode* rear;
+
+public:
+    CircularQueue();
+    void enqueue(int);
+    void dequeue();
+    bool isEmpty();
+    void display();
+};
+
+
+
+								Implementation
+
+#include"CircularNode.h"
+#include"CircularQueue.h"
+using namespace std;
+
+
+CircularNode::CircularNode()
+{
+    this->data = 0;
+    next = NULL;
+}
+
+CircularNode::CircularNode(int data)
+{
+    this->data = data;
+    this->next = NULL;
+}
+
+void CircularNode::setData(int data)
+{
+    this->data = data;
+}
+
+void CircularNode::setNext(CircularNode* next)
+{
+    this->next = next;
+}
+
+int CircularNode::getData()
+{
+    return this->data;
+}
+
+CircularNode* CircularNode::getNext()
+{
+    return this->next;
+}
+CircularQueue::CircularQueue()
+{
+    front = NULL;
+    rear = NULL;
+}
+
+bool CircularQueue::isEmpty()
+{
+    return front == NULL;
+}
+
+void CircularQueue::enqueue(int data)
+{
+    CircularNode* newNode = new CircularNode(data);
+    if (isEmpty())
+    {
+        front = newNode;
+        rear = newNode;
+        rear->setNext(front); 
+    }
+    else
+    {
+        rear->setNext(newNode);
+        rear = newNode;
+        rear->setNext(front); 
+    }
+    cout << "Enqueued: " << data << endl;
+}
+
+void CircularQueue::dequeue()
+{
+    if (isEmpty())
+    {
+        cout << "Queue is empty. Cannot dequeue.\n";
+        return;
+    }
+    if (front == rear) 
+    {
+        cout << "Dequeued: " << front->getData() << endl;
+        delete front;
+        front = NULL;
+        rear = NULL;
+    }
+    else
+    {
+        CircularNode* temp = front;
+        front = front->getNext();
+        rear->setNext(front); 
+        cout << "Dequeued: " << temp->getData() << endl;
+        delete temp;
+    }
+}
+
+void CircularQueue::display()
+{
+    if (isEmpty())
+    {
+        cout << "Queue is empty.\n";
+        return;
+    }
+
+    cout << "Queue elements: ";
+    CircularNode* temp = front;
+    while (temp != front)
+    {
+        cout << temp->getData() << " ";
+        temp = temp->getNext();
+    }
+    cout << endl;
+}
+
+
+
+
+									Main
+
+#include <iostream>
+#include "CircularQueue.h"
+using namespace std;
+
+int main()
+{
+    CircularQueue queue;
+
+    cout << "Adding elements to the Circular Queue...\n";
+    queue.enqueue(10);
+    queue.enqueue(20);
+    queue.enqueue(30);
+    queue.enqueue(40);
+
+    cout << "\nDisplaying the Circular Queue:\n";
+    queue.display();
+
+    cout << "\nDequeuing two elements from the Circular Queue...\n";
+    queue.dequeue();
+    queue.dequeue();
+
+    cout << "\nDisplaying the Circular Queue after dequeuing:\n";
+    queue.display();
+
+    cout << "\nAdding more elements to the Circular Queue...\n";
+    queue.enqueue(50);
+    queue.enqueue(60);
+
+    cout << "\nDisplaying the final Circular Queue:\n";
+    queue.display();
+
+    return 0;
+}
