@@ -1,0 +1,189 @@
+			
+		
+									SimpleNode.h
+
+#pragma once
+#include<iostream>
+using namespace std;
+class SimpleNode
+{
+private:
+    int data;
+    SimpleNode* next;
+
+public:
+    SimpleNode();
+    SimpleNode(int);
+    void setData(int);
+    void setNext(SimpleNode*);
+    int getData();
+    SimpleNode* getNext();
+};
+
+	
+								SimpleQueue.h
+
+
+#pragma once
+#include"SimpleNode.h"
+#include<iostream>
+using namespace std;
+
+class SimpleQueue
+{
+private:
+    SimpleNode* front;
+    SimpleNode* rear;
+
+public:
+    SimpleQueue();
+    void enqueue(int);
+    void dequeue();
+    bool isEmpty();
+    void display();
+};
+
+
+								Implementation
+
+#include"SimpleNode.h"
+#include"SimpleQueue.h"
+using namespace std;
+SimpleNode::SimpleNode()
+{
+    this->data = 0;
+    next = NULL;
+}
+
+SimpleNode::SimpleNode(int data)
+{
+    this->data = data;
+    this->next = NULL;
+}
+
+void SimpleNode::setData(int data)
+{
+    this->data = data;
+}
+
+void SimpleNode::setNext(SimpleNode* next)
+{
+    this->next = next;
+}
+
+int SimpleNode::getData()
+{
+    return this->data;
+}
+
+SimpleNode* SimpleNode::getNext()
+{
+    return this->next;
+}
+SimpleQueue::SimpleQueue()
+{
+    front = NULL;
+    rear = NULL;
+}
+
+bool SimpleQueue::isEmpty()
+{
+    if (rear == NULL && front == NULL)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+void SimpleQueue::enqueue(int data)
+{
+    SimpleNode* newNode = new SimpleNode(data);
+    if (isEmpty())
+    {
+        front = newNode;
+        rear = newNode;
+    }
+    else
+    {
+        rear->setNext(newNode);
+        rear = newNode;
+    }
+    cout << "Enqueued: " << data << endl;
+}
+
+void SimpleQueue::dequeue()
+{
+    if (isEmpty())
+    {
+        cout << "Queue is empty. Cannot dequeue.\n";
+        return;
+    }
+    SimpleNode* temp = front;
+    front = front->getNext();
+    if (front == NULL)
+    {
+        rear = NULL;
+    }
+    cout << "Dequeued: " << temp->getData() << endl;
+    delete temp;
+}
+
+void SimpleQueue::display()
+{
+    if (isEmpty())
+    {
+        cout << "Queue is empty.\n";
+        return;
+    }
+    cout << "Queue elements: ";
+    SimpleNode* temp = front;
+    while (temp != NULL)
+    {
+        cout << temp->getData() << " ";
+        temp = temp->getNext();
+    }
+    cout << endl;
+}
+
+
+									Main
+
+
+
+#include <iostream>
+#include "SimpleQueue.h"
+using namespace std;
+
+int main()
+{
+    SimpleQueue queue;
+
+    cout << "Adding elements to the Queue...\n";
+    queue.enqueue(10);
+    queue.enqueue(20);
+    queue.enqueue(30);
+    queue.enqueue(40);
+
+    cout << "\nDisplaying the Queue:\n";
+    queue.display();
+
+    cout << "\nDequeuing two elements from the Queue...\n";
+    queue.dequeue();
+    queue.dequeue();
+
+    cout << "\nDisplaying the Queue after dequeuing:\n";
+    queue.display();
+
+    cout << "\nAdding more elements to the Queue...\n";
+    queue.enqueue(50);
+    queue.enqueue(60);
+
+    cout << "\nDisplaying the final Queue:\n";
+    queue.display();
+
+    return 0;
+}
+
