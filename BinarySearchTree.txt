@@ -1,0 +1,365 @@
+
+
+							TreeNode.h
+#pragma once
+#include<iostream>
+using namespace std;
+class TreeNode
+{
+    private:
+    
+    int data;
+    int key;
+    TreeNode* right;
+    TreeNode* left;
+ 
+ public:
+
+     TreeNode();
+     TreeNode(int, int);
+     void setData(int);
+     void setKey(int);
+     void setRight(TreeNode*);
+     void setLeft(TreeNode*);
+     int getData();
+     int getKey();
+     TreeNode* getRight();
+     TreeNode* getLeft();
+
+
+
+};
+	
+			
+			
+
+							Tree.h
+
+
+#pragma once
+#include"TreeNode.h"
+#include<iostream>
+using namespace std;
+class Tree
+{
+private:
+	TreeNode* root;
+public:
+	Tree();
+	void Insert(int, int);
+	bool isEmpty();
+	void inOrder(TreeNode*);
+	void removeNode(int);
+	TreeNode* Search(int);
+	void Display();
+};
+
+
+
+							Implementation
+
+
+#include"TreeNode.h"
+#include"Tree.h"
+using namespace std;
+				
+							///.............TreeNode Class Implementation//.................
+
+
+TreeNode::TreeNode()
+{
+	this->data = 0;
+	this->key = 0;
+	right = NULL;
+	left = NULL;
+}
+TreeNode::TreeNode(int data, int key)
+{
+	this->data = data;
+	this->key = key;
+	right = NULL;
+	left = NULL;
+}
+void TreeNode::setData(int data)
+{
+	this->data = data;
+}
+void TreeNode::setKey(int key)
+{
+	this->key = key;
+}
+void TreeNode::setRight(TreeNode* right)
+{
+	this->right = right;
+}
+void TreeNode::setLeft(TreeNode* left)
+{
+	this->left = left;
+}
+int TreeNode::getData()
+{
+	return this->data;
+}
+int TreeNode::getKey()
+{
+	return this->key;
+}
+TreeNode* TreeNode::getRight()
+{
+	return this->right;
+}
+TreeNode* TreeNode::getLeft()
+{
+	return this->left;
+}
+
+					//.............................Tree Class Implementation//..........................
+
+
+Tree::Tree()
+{
+    root = NULL;
+}
+
+bool Tree::isEmpty()
+{
+    if (root == NULL)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+void Tree::Insert(int data, int key)
+{
+    if (isEmpty())
+    {
+        TreeNode* temp = new TreeNode(data, key);
+        root = temp;
+    }
+    else
+    {
+        TreeNode* temp = root;
+        TreeNode* parent = NULL; 
+
+        while (temp != NULL)
+        {
+            parent = temp; 
+
+            if (temp->getKey() == key)
+            {
+                return; 
+            }
+            else if (temp->getKey() > key)
+            {
+                temp = temp->getLeft();
+            }
+            else
+            {
+                temp = temp->getRight();
+            }
+        }
+
+        TreeNode* newNode = new TreeNode(data, key);
+        if (parent->getKey() > key)
+        {
+            parent->setLeft(newNode);
+        }
+        else
+        {
+            parent->setRight(newNode);
+        }
+    }
+}
+
+
+TreeNode* Tree::Search(int key)
+{
+    TreeNode* temp = root;
+    while (temp != NULL)
+    {
+        if (temp->getKey() == key)
+        {
+            return temp; 
+        }
+        else if (temp->getKey() > key)
+        {
+            temp = temp->getLeft();
+        }
+        else if (temp->getKey() < key)
+        {
+            temp = temp->getRight();
+        }
+    }
+    return NULL;
+}
+
+void Tree::inOrder(TreeNode* n)
+{
+    if (n == NULL)
+        return;
+
+    inOrder(n->getLeft());
+    cout << n->getKey() << endl;
+    inOrder(n->getRight());
+}
+
+void Tree::removeNode(int key)
+{
+    TreeNode* temp = root;
+    TreeNode* parent = NULL;
+
+    
+    while (temp != NULL && temp->getKey() != key)
+    {
+        parent = temp;
+        if (key < temp->getKey())
+        {
+            temp = temp->getLeft();
+        }
+        else
+        {
+            temp = temp->getRight();
+        }
+    }
+
+
+    if (temp == NULL)
+        return;
+
+    
+    if (temp->getRight() == NULL && temp->getLeft() == NULL)
+    {
+        if (parent == NULL) 
+        {
+            root = NULL;
+        }
+        else if (parent->getLeft() == temp)
+        {
+            parent->setLeft(NULL);
+        }
+        else
+        {
+            parent->setRight(NULL);
+        }
+        delete temp;
+    }
+    
+    else if (temp->getRight() == NULL || temp->getLeft() == NULL)
+    {
+        TreeNode* child;
+        
+        if (temp->getLeft() != NULL)
+        {
+            child = temp->getLeft();
+        }
+        else
+        {
+            child = temp->getRight();
+        }
+
+        if (parent == NULL) 
+        {
+            root = child;
+        }
+        else if (parent->getLeft() == temp)
+        {
+            parent->setLeft(child);
+        }
+        else
+        {
+            parent->setRight(child);
+        }
+        delete temp;
+    }
+    
+    else
+    {
+
+        TreeNode* successorParent = temp;
+        TreeNode* successor = temp->getRight();
+        while (successor->getLeft() != NULL)
+        {
+            successorParent = successor;
+            successor = successor->getLeft();
+        }
+
+        
+        temp->setKey(successor->getKey());
+        temp->setData(successor->getData());
+
+        
+        if (successorParent->getLeft() == successor)
+        {
+            successorParent->setLeft(successor->getRight());
+        }
+        else
+        {
+            successorParent->setRight(successor->getRight());
+        }
+        delete successor;
+    }
+}
+
+void Tree::Display()
+{
+    inOrder(root);
+}
+
+
+
+
+
+									Main 
+
+
+#include"TreeNode.h"
+#include"Tree.h"
+#include<iostream>
+using namespace std;
+
+
+int main()
+{
+    Tree tree;
+
+    cout << "Testing Tree Implementation...\n";
+
+    cout << "Inserting nodes into the tree...\n";
+    tree.Insert(50, 1);
+    tree.Insert(30, 2);
+    tree.Insert(70, 3);
+    tree.Insert(20, 4);
+    tree.Insert(40, 5);
+    tree.Insert(60, 6);
+    tree.Insert(80, 7);
+
+    
+    cout << "In-order traversal of the tree: \n";
+    tree.Display();
+
+    
+    cout << "Searching for node with key 3...\n";
+    TreeNode* searchResult = tree.Search(3);
+    if (searchResult != NULL)
+    {
+        cout << "Node found: Data = " << searchResult->getData() << ", Key = " << searchResult->getKey() << "\n";
+    }
+    else
+    {
+        cout << "Node with key 3 not found.\n";
+    }
+
+   
+    cout << "Removing node with key 2...\n";
+    tree.removeNode(2);
+
+  
+    cout << "In-order traversal of the tree after removal: \n";
+    tree.Display();
+
+    return 0;
+}
