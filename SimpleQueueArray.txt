@@ -1,0 +1,162 @@
+
+
+							SimpleQueueArray.h
+
+
+#pragma once
+#include<iostream>
+using namespace std;
+class SimpleQueueArray
+{
+private:
+    int* queue;
+    int front;
+    int rear;
+    int capacity;
+
+public:
+    SimpleQueueArray(int);
+    ~SimpleQueueArray();
+    void enqueue(int);
+    void dequeue();
+    bool isEmpty();
+    bool isFull();
+    void display();
+};
+
+
+							Implementation
+
+
+
+#include"SimpleQueueArray.h"
+#include<iostream>
+using namespace std;
+
+SimpleQueueArray::SimpleQueueArray(int size)
+{
+    this->capacity = size;
+    this->queue = new int[capacity];
+    front = -1;
+    rear = -1;
+}
+
+SimpleQueueArray::~SimpleQueueArray()
+{
+    delete[] queue;
+}
+
+bool SimpleQueueArray::isEmpty()
+{
+    return (front == -1);
+}
+
+bool SimpleQueueArray::isFull()
+{
+    return ((rear + 1) % capacity == front);
+}
+
+void SimpleQueueArray::enqueue(int data)
+{
+    if (isFull())
+    {
+        cout << "Queue is full. Cannot enqueue.\n";
+        return;
+    }
+
+    if (isEmpty())
+    {
+        front = 0;
+    }
+
+    rear = (rear + 1) % capacity;
+    queue[rear] = data;
+    cout << "Enqueued: " << data << endl;
+}
+
+void SimpleQueueArray::dequeue()
+{
+    if (isEmpty())
+    {
+        cout << "Queue is empty. Cannot dequeue.\n";
+        return;
+    }
+
+    cout << "Dequeued: " << queue[front] << endl;
+
+    if (front == rear)
+    {
+        front = -1;
+        rear = -1;
+    }
+    else
+    {
+        front = (front + 1) % capacity;
+    }
+}
+
+void SimpleQueueArray::display()
+{
+    if (isEmpty())
+    {
+        cout << "Queue is empty.\n";
+        return;
+    }
+
+    cout << "Queue elements: ";
+    int i = front;
+    while (true)
+    {
+        cout << queue[i] << " ";
+        if (i == rear)
+        {
+            break;
+        }
+        i = (i + 1) % capacity;
+    }
+    cout << endl;
+}
+
+
+
+
+
+							Main
+
+#include <iostream>
+#include "SimpleQueueArray.h"
+using namespace std;
+
+int main()
+{
+    int size;
+    cout << "Enter the size of the queue: ";
+    cin >> size;
+
+    SimpleQueueArray queue(size);
+
+    cout << "Adding elements to the Queue...\n";
+    queue.enqueue(10);
+    queue.enqueue(20);
+    queue.enqueue(30);
+    queue.enqueue(40);
+
+    cout << "\nDisplaying the Queue:\n";
+    queue.display();
+
+    cout << "\nDequeuing two elements from the Queue...\n";
+    queue.dequeue();
+    queue.dequeue();
+
+    cout << "\nDisplaying the Queue after dequeuing:\n";
+    queue.display();
+
+    cout << "\nAdding more elements to the Queue...\n";
+    queue.enqueue(50);
+    queue.enqueue(60);
+
+    cout << "\nDisplaying the final Queue:\n";
+    queue.display();
+
+    return 0;
+}

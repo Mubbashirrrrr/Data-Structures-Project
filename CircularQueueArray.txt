@@ -1,0 +1,162 @@
+
+
+								CircularQueueArray.h
+
+
+#pragma once
+#include<iostream>
+using namespace std;
+class CircularQueueArray
+{
+private:
+    int* queue;
+    int front;
+    int rear;
+    int capacity;
+
+public:
+    CircularQueueArray(int size);
+    ~CircularQueueArray();
+    void enqueue(int);
+    void dequeue();
+    bool isEmpty();
+    bool isFull();
+    void display();
+};
+
+
+
+
+							Implementation
+
+
+#include"CircularQueueArray.h"
+#include<iostream>
+using namespace std;
+
+CircularQueueArray::CircularQueueArray(int size)
+{
+    capacity = size;
+    queue = new int[capacity];
+    front = -1;
+    rear = -1;
+}
+
+CircularQueueArray::~CircularQueueArray()
+{
+    delete[] queue;
+}
+
+bool CircularQueueArray::isEmpty()
+{
+    return (front == -1);
+}
+
+bool CircularQueueArray::isFull()
+{
+    return ((rear + 1) % capacity == front);
+}
+
+void CircularQueueArray::enqueue(int data)
+{
+    if (isFull())
+    {
+        cout << "Queue is full. Cannot enqueue.\n";
+        return;
+    }
+
+    if (isEmpty())
+    {
+        front = 0;
+    }
+
+    rear = (rear + 1) % capacity;
+    queue[rear] = data;
+    cout << "Enqueued: " << data << endl;
+}
+
+void CircularQueueArray::dequeue()
+{
+    if (isEmpty())
+    {
+        cout << "Queue is empty. Cannot dequeue.\n";
+        return;
+    }
+
+    cout << "Dequeued: " << queue[front] << endl;
+
+    if (front == rear)
+    {
+        front = -1;
+        rear = -1;
+    }
+    else
+    {
+        front = (front + 1) % capacity;
+    }
+}
+
+void CircularQueueArray::display()
+{
+    if (isEmpty())
+    {
+        cout << "Queue is empty.\n";
+        return;
+    }
+
+    cout << "Queue elements: ";
+    int i = front;
+    while (true)
+    {
+        cout << queue[i] << " ";
+        if (i == rear)
+        {
+            break;
+        }
+        i = (i + 1) % capacity;
+    }
+    cout << endl;
+}
+
+
+
+							Main
+
+#include <iostream>
+#include "CircularQueueArray.h"
+using namespace std;
+
+int main()
+{
+    int size;
+    cout << "Enter the size of the queue: ";
+    cin >> size;
+
+    CircularQueueArray queue(size);
+
+    cout << "Adding elements to the Queue...\n";
+    queue.enqueue(10);
+    queue.enqueue(20);
+    queue.enqueue(30);
+    queue.enqueue(40);
+    queue.enqueue(50);
+
+    cout << "\nDisplaying the Queue:\n";
+    queue.display();
+
+    cout << "\nDequeuing two elements from the Queue...\n";
+    queue.dequeue();
+    queue.dequeue();
+
+    cout << "\nDisplaying the Queue after dequeuing:\n";
+    queue.display();
+
+    cout << "\nAdding more elements to the Queue...\n";
+    queue.enqueue(55);
+    queue.enqueue(60);
+
+    cout << "\nDisplaying the final Queue:\n";
+    queue.display();
+
+    return 0;
+}
